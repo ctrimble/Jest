@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "took": {
+      "type": "integer"
+    },
+    "timed_out": {
+      "type": "boolean"
+    },
+    "_shards": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer"
+        },
+        "successful": {
+          "type": "integer"
+        },
+        "failed": {
+          "type": "integer"
+        }
+      }
+    },
+    "hits": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer"
+        },
+        "max_score": {
+          "type": "integer"
+        },
+        "hits": {
+          "type": "array",
+          "items": [
+            {
+              "type": "object",
+              "properties": {
+                "_index": {
+                  "type": "string"
+                },
+                "_type": {
+                  "type": "string"
+                },
+                "_id": {
+                  "type": "string"
+                },
+                "_score": {
+                  "type": "integer"
+                },
+                "_source": {
+                  "type": "object",
+                  "javaType": "com.fasterxml.jackson.databind.JsonNode"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
