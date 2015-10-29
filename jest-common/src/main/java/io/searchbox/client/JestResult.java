@@ -1,12 +1,10 @@
 package io.searchbox.client;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.searchbox.annotations.JestId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -18,34 +16,34 @@ import java.util.Map;
 /**
  * @author Dogukan Sonmez
  */
-public class JestResult {
+public class JestResult<R> {
 
     public static final String ES_METADATA_ID = "es_metadata_id";
     private static final Logger log = LoggerFactory.getLogger(JestResult.class);
 
-    protected JsonObject jsonObject;
+    protected R response;
     protected String jsonString;
     protected String pathToResult;
     protected int responseCode;
     protected boolean isSucceeded;
     protected String errorMessage;
-    protected Gson gson;
+    protected ObjectMapper mapper;
 
     private JestResult() {
     }
 
-    public JestResult(JestResult source) {
-        this.jsonObject = source.jsonObject;
+    public JestResult(JestResult<R> source) {
+        this.response = source.response;
         this.jsonString = source.jsonString;
         this.pathToResult = source.pathToResult;
         this.responseCode = source.responseCode;
         this.isSucceeded = source.isSucceeded;
         this.errorMessage = source.errorMessage;
-        this.gson = source.gson;
+        this.mapper = source.mapper;
     }
 
-    public JestResult(Gson gson) {
-        this.gson = gson;
+    public JestResult(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 
     public String getPathToResult() {
@@ -54,10 +52,6 @@ public class JestResult {
 
     public void setPathToResult(String pathToResult) {
         this.pathToResult = pathToResult;
-    }
-
-    public Object getValue(String key) {
-        return getJsonMap().get(key);
     }
 
     public boolean isSucceeded() {
@@ -95,26 +89,16 @@ public class JestResult {
         this.errorMessage = errorMessage;
     }
 
-    public JsonObject getJsonObject() {
-        return jsonObject;
+    public R getResponse() {
+        return response;
     }
 
-    public void setJsonObject(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
-        if (jsonObject.get("error") != null) {
-            errorMessage = jsonObject.get("error").getAsString();
-        }
-    }
-
-    @Deprecated
-    @SuppressWarnings("rawtypes")
-    public Map getJsonMap() {
-        return gson.fromJson(jsonObject, Map.class);
-    }
-
-    public void setJsonMap(Map<String, Object> resultMap) {
-        String json = gson.toJson(resultMap, Map.class);
-        setJsonObject(new JsonParser().parse(json).getAsJsonObject());
+    public void setResponse(R response) {
+        this.response = response;
+        // NOTE: need something to test for errors.  Interface or strategy would do.
+        //if (jsonObject.get("error") != null) {
+        //    errorMessage = jsonObject.get("error").getAsString();
+        //}
     }
 
     public <T> T getSourceAsObject(Class<T> clazz) {

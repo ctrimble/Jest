@@ -1,6 +1,5 @@
 package io.searchbox.core;
 
-import com.google.gson.Gson;
 import io.searchbox.action.AbstractAction;
 import io.searchbox.action.AbstractMultiTypeActionBuilder;
 import io.searchbox.core.search.sort.Sort;
@@ -9,13 +8,15 @@ import io.searchbox.params.SearchType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.*;
 
 /**
  * @author Dogukan Sonmez
  * @author cihat keser
  */
-public class Search extends AbstractAction<SearchResult> {
+public class Search<S, E, A> extends AbstractAction<SearchResult<S, E, A>> {
 
     private String query;
     private List<Sort> sortList = new LinkedList<Sort>();
@@ -29,8 +30,8 @@ public class Search extends AbstractAction<SearchResult> {
     }
 
     @Override
-    public SearchResult createNewElasticSearchResult(String responseBody, int statusCode, String reasonPhrase, Gson gson) {
-        return createNewElasticSearchResult(new SearchResult(gson), responseBody, statusCode, reasonPhrase, gson);
+    public SearchResult createNewElasticSearchResult(String responseBody, int statusCode, String reasonPhrase, ObjectMapper mapper) {
+        return createNewElasticSearchResult(new SearchResult(mapper), responseBody, statusCode, reasonPhrase, mapper);
     }
 
     public String getIndex() {

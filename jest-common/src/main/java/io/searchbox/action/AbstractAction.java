@@ -1,5 +1,7 @@
 package io.searchbox.action;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -148,13 +150,13 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
     }
 
     @Override
-    public String getData(Gson gson) {
+    public String getData(ObjectMapper mapper) throws Exception {
         if (payload == null) {
             return null;
         } else if (payload instanceof String) {
             return (String) payload;
         } else {
-            return gson.toJson(payload);
+            return mapper.writeValueAsString(payload);
         }
     }
 
